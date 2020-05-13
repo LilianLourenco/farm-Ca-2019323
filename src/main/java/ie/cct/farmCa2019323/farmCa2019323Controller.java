@@ -2,6 +2,7 @@ package ie.cct.farmCa2019323;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,13 +33,15 @@ public class farmCa2019323Controller {
 	// second endpoint
 	@GetMapping("calculate-animal-average-weight")
 
-	public float averageAnimalWeight() {
+	public HashMap<String, Float> averageAnimalWeight() {
 //		if (animals.size() != 0) {
 
 		float pigWeight = 0.0f;
 		float cowWeight = 0.0f;
 		float chickenWeight = 0.0f;
 		float weight = 0.0f;
+
+		HashMap<String, Float> weightAnimal = new HashMap<String, Float>();
 
 		for (Animal animal : animals) {
 
@@ -68,14 +71,18 @@ public class farmCa2019323Controller {
 				System.out.println("The average weight of chickens  is " + chickenWeight);
 
 			}
+			weightAnimal.put("pigs", pigWeight);
+			weightAnimal.put("cows", cowWeight);
+			weightAnimal.put("chickens", chickenWeight);
+			System.out.println(weightAnimal.keySet());
 		}
-		return (weight);
+		return (weightAnimal);
 	}
 
 	// third endpoint
 	@GetMapping("calculate-total")
-	public int calculate() {
-		// ArrayList<Animal> myAnimal = new ArrayList<Animal>();
+	public HashMap<String, Integer> calculate() {
+
 		int totalPigs = 0;
 		int totalCows = 0;
 		int totalChickens = 0;
@@ -105,26 +112,17 @@ public class farmCa2019323Controller {
 				totalChickens++;
 				totalAnimal = totalChickens;
 				System.out.println("The total of chickens is : " + totalChickens);
-				
-				
-				
-				
+
 				System.out.println(animal);
 			}
 		}
-		
-				
-		 return (totalAnimal);
+
+		HashMap<String, Integer> myAnimal = new HashMap<String, Integer>();
+		myAnimal.put("pigs", totalPigs);
+		myAnimal.put("cows", totalCows);
+		myAnimal.put("chickens", totalChickens);
+		System.out.println(myAnimal.keySet());
+		return (myAnimal);
 
 	}
-
-//	public Collection<Animal> ListAnimal() {
-//		ArrayList<Animal> myAnimal = new ArrayList<Animal>();
-//		for (int i = 0; i < animals.size(); i++) {
-//			myAnimal.add(animals.get(i));
-//		}
-//
-//		return animals;
-//
-//	}
 }
