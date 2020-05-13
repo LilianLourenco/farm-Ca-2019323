@@ -99,26 +99,32 @@ public class farmCa2019323Controller {
 			if (animal.getType().equals("cows") && animal.getWeight() >= 300) {
 				totalCows++;
 				totalAnimal = totalCows;
-				System.out.println("The total off cows is : " + totalCows);
+				System.out.println("The total of cows is : " + totalCows);
 			}
 			if (animal.getType().equals("chickens") && animal.getWeight() >= 0.5) {
 				totalChickens++;
 				totalAnimal = totalChickens;
 				System.out.println("The total of chickens is : " + totalChickens);
-
+				
+				
+				
+				
+				System.out.println(animal);
 			}
 		}
-		return (totalAnimal );
+		
+				
+		 return (totalAnimal);
 
 	}
 
-	public Collection<Animal> ListAnimal() {
-		ArrayList<Animal> myAnimal = new ArrayList<Animal>();
-		for (int i = 0; i < animals.size(); i++) {
-			myAnimal.add(animals.get(i));
-		}
-
-		return animals;
-
-	}
+//	public Collection<Animal> ListAnimal() {
+//		ArrayList<Animal> myAnimal = new ArrayList<Animal>();
+//		for (int i = 0; i < animals.size(); i++) {
+//			myAnimal.add(animals.get(i));
+//		}
+//
+//		return animals;
+//
+//	}
 }
