@@ -31,7 +31,8 @@ public class farmCa2019323Controller {
 	}
 
 	// second endpoint
-	@GetMapping("calculate-animal-average-weight")
+	// Get http://localhost:8080/average-weight
+	@GetMapping("average-weight")
 
 	public HashMap<String, Float> averageAnimalWeight() {
 //		if (animals.size() != 0) {
@@ -40,13 +41,14 @@ public class farmCa2019323Controller {
 		float cowWeight = 0.0f;
 		float chickenWeight = 0.0f;
 		float weight = 0.0f;
-
+		// hasshMap will take all type of animals in a list
 		HashMap<String, Float> weightAnimal = new HashMap<String, Float>();
-
+		// lopping 
 		for (Animal animal : animals) {
-
+			// taking the animal by type
 			if (animal.getType().equals("pigs")) {
-				pigs.add(animal);
+				pigs.add(animal); 
+			
 				pigWeight += animal.getWeight();
 			}
 			pigWeight = pigWeight / animals.size();
@@ -123,6 +125,49 @@ public class farmCa2019323Controller {
 		myAnimal.put("chickens", totalChickens);
 		System.out.println(myAnimal.keySet());
 		return (myAnimal);
+
+	}
+
+	
+	// forth endpoint
+	@GetMapping("calculate-Total-Farm")
+	public int calculateFarm() {
+		int totalPigs = 0;
+		int totalCows = 0;
+		int totalChickens = 0;
+		int totalAnimal = 0;
+
+		for (Animal animal : animals) {
+			if (animal.getType().equals("pigs") && animal.getWeight() >= 100) {
+			
+				 totalPigs+= animal.getPrice(); 
+			}
+			
+			totalAnimal = totalPigs + animals.size()-1;
+			
+			
+				
+		//Getting the type of the aninal and checking if the weiht is enough for sell
+		if (animal.getType().equals("cows") && animal.getWeight() >= 300) {
+			//taking the price of the animal and adding it in the variable totalCows
+			 totalCows+= animal.getPrice(); 
+		}
+		totalAnimal = totalCows + animals.size();
+	
+		if (animal.getType().equals("chickens") && animal.getWeight() >= 0.5) {
+			
+			 totalChickens+= animal.getPrice(); 
+		}
+		
+		totalAnimal = totalChickens + animals.size();
+	}
+		totalAnimal = totalPigs +  totalCows + totalChickens;
+	
+		
+		
+		
+		
+		return totalAnimal;
 
 	}
 }
