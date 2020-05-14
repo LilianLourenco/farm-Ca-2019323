@@ -7,6 +7,7 @@ import java.util.HashMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -17,6 +18,9 @@ public class farmCa2019323Controller {
 	ArrayList<Animal> pigs = new ArrayList<>();
 	public ArrayList<Animal> chickens = new ArrayList<>();
 
+	/**
+	 * FIRST ENDPOINT
+	 */
 	public farmCa2019323Controller() {// creating a constructor
 		animals = new ArrayList<Animal>();// creating an empty array inside the constructor
 	}
@@ -30,12 +34,16 @@ public class farmCa2019323Controller {
 
 	}
 
-	// second endpoint
+	/**
+	 * SECOND ENDPOINT
+	 */
 	// Get http://localhost:8080/average-weight
 	@GetMapping("average-weight")
 	public HashMap<String, Float> averageAnimalWeight() {
-//		if (animals.size() != 0) {
+		if (animals.size() == 0) {
 
+			throw new NotFoundException("No animals stored in the farm");
+		}
 		float pigWeight = 0.0f;
 		float cowWeight = 0.0f;
 		float chickenWeight = 0.0f;
@@ -78,9 +86,16 @@ public class farmCa2019323Controller {
 		return (weightAnimal);
 	}
 
-	// third endpoint
+	/**
+	 * THIRD ENDPOINT
+	 */
 	@GetMapping("calculate-total")
 	public HashMap<String, Integer> calculate() {
+
+		if (animals.size() == 0) {
+
+			throw new NotFoundException("No animals stored in the farm");
+		}
 		int totalPigs = 0;
 		int totalCows = 0;
 		int totalChickens = 0;
@@ -123,15 +138,22 @@ public class farmCa2019323Controller {
 
 	}
 
-	// forth endpoint
+	/**
+	 * FOURTH ENDPOINT
+	 */
 	@GetMapping("calculate-Total-Farm")
-	public int calculateFarm() {
+	public String calculateFarm() {
 		int totalPigs = 0;
 		int totalCows = 0;
 		int totalChickens = 0;
 		int totalAnimal = 0;
 
 		for (Animal animal : animals) {
+//			if (animal.getType().equals("pigs") && animal.getWeight() < 100) {
+//
+//				// not Acceptable is not working
+//				throw new NotAcceptable("Not acceptable sell animal under weigth");
+//			}
 			if (animal.getType().equals("pigs") && animal.getWeight() >= 100) {
 
 				totalPigs += animal.getPrice();
@@ -153,8 +175,24 @@ public class farmCa2019323Controller {
 			totalAnimal = totalChickens + animals.size();
 		}
 		totalAnimal = totalPigs + totalCows + totalChickens;
-		
-		return totalAnimal;
+
+		return "The total of the Farm is: €" + totalAnimal;
+
+	}
+
+	/**
+	 * FIFTH ENDPOINT
+	 * 
+	 * @return
+	 */
+	// value of the farm assuming the price of each animal is set by a parameter in
+	// the HTTP request
+
+	@GetMapping("request-params")
+	public String farmValue(@RequestParam(required = true) Float pigPrice,
+			@RequestParam(required = true) float cowPrice, @RequestParam(required = true) int chickensPrice) {
+
+		return "The total of the Farm is: €" + "pigs" + pigPrice + "cows" + " " + cowPrice + "chickens" + chickensPrice;
 
 	}
 }
