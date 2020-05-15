@@ -191,13 +191,48 @@ public class farmCa2019323Controller {
 	// value of the farm assuming the price of each animal is set by a parameter in
 	// the HTTP request
 
-	
 	@GetMapping("request-params")
-	public String farmValue(@RequestParam(required = true) Float pigPrice,
+	public SuccessResponse farmValue(@RequestParam(required = true) Float pigPrice,
 			@RequestParam(required = true) float cowPrice, @RequestParam(required = true) float chickensPrice) {
-		float totalAnimal=0.f;
-		totalAnimal = pigPrice + cowPrice + chickensPrice;
-		return " pigs  €" + pigPrice + "  cows  €"  + cowPrice + "  chickens  €" + chickensPrice  +" The Farm total is:   €"+totalAnimal;
+
+		if (animals.size() == 0) {
+
+			throw new NotFoundException("No animals stored in the farm");
+		}
+		int totalPigs = 0;
+		int totalCows = 0;
+		int totalChickens = 0;
+		float totalAnimal = 0;
+
+		for (Animal animal : animals) {
+			if (animals.size() == 0) {
+				{
+					throw new RuntimeException("No animals found in the Farm");
+				}
+			}
+			if (animal.getType().equals("pigs") && animal.getWeight() >= 100) {
+
+				totalPigs+= pigPrice;
+				// totalAnimal = totalPigs;
+			//	System.out.println("The total of pigs is : " + totalPigs);
+
+			}
+
+			if (animal.getType().equals("cows") && animal.getWeight() >= 300) {
+				totalCows+= cowPrice;
+				// totalAnimal = totalCows;
+				System.out.println("The total of cows is : " + totalCows);
+			}
+			if (animal.getType().equals("chickens") && animal.getWeight() >= 0.5) {
+				totalChickens+= chickensPrice;
+				// totalAnimal = totalChickens;
+			}
+		}
+
+		totalAnimal = totalPigs + totalCows + totalChickens;
+
+		return new SuccessResponse(" pigs  €" + pigPrice + "  cows  €" + cowPrice + "  chickens  €" + chickensPrice
+				+ " The Farm total is:   €" + totalAnimal);
 
 	}
 }
