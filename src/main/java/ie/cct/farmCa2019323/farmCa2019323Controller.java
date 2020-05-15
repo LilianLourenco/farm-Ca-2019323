@@ -1,7 +1,6 @@
 package ie.cct.farmCa2019323;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class farmCa2019323Controller {
 
 	public ArrayList<Animal> animals;// creating an arrayList
-	public ArrayList<Animal> cow = new ArrayList<>();
+	public ArrayList<Animal> cows = new ArrayList<>();
 	ArrayList<Animal> pigs = new ArrayList<>();
 	public ArrayList<Animal> chickens = new ArrayList<>();
 
@@ -58,31 +57,29 @@ public class farmCa2019323Controller {
 
 				pigWeight += animal.getWeight();
 			}
-			pigWeight = pigWeight / animals.size();
-			weight = pigWeight / animals.size();
-			System.out.println("The average weight of pig  is " + pigWeight);
 
+			weight = pigWeight / pigs.size();
+			System.out.println("The average weight of pig  is " + pigWeight);
 			if (animal.getType().equals("cows")) {
 				cowWeight += animal.getWeight();
-				cowWeight = cowWeight / animals.size();
-				weight = cowWeight / animals.size();
-				// line for check the result in eclipse
-				System.out.println("The average weight of cow is " + cowWeight);
-
 			}
+
+			weight = cowWeight / cows.size();
+			// line for check the result in eclipse
+			System.out.println("The average weight of cow is " + cowWeight);
 
 			if (animal.getType().equals("chickens")) {
 				chickenWeight += animal.getWeight();
-				chickenWeight = chickenWeight / animals.size();
-				weight = chickenWeight / animals.size();
-				System.out.println("The average weight of chickens  is " + chickenWeight);
-
 			}
-			weightAnimal.put("pigs", pigWeight);
-			weightAnimal.put("cows", cowWeight);
-			weightAnimal.put("chickens", chickenWeight);
-			System.out.println(weightAnimal.keySet());
+			weight = chickenWeight / chickens.size();
+			System.out.println("The average weight of chickens  is " + chickenWeight);
+
 		}
+		weightAnimal.put("pigs", pigWeight);
+		weightAnimal.put("cows", cowWeight);
+		weightAnimal.put("chickens", chickenWeight);
+		System.out.println(weightAnimal.keySet());
+
 		return (weightAnimal);
 	}
 
@@ -142,41 +139,47 @@ public class farmCa2019323Controller {
 	 * FOURTH ENDPOINT
 	 */
 	@GetMapping("calculate-Total-Farm")
-	public String calculateFarm() {
+	public SuccessResponse calculateFarm() {
+		if (animals.size() == 0) {
+
+			throw new NotFoundException("No animals stored in the farm");
+		}
 		int totalPigs = 0;
 		int totalCows = 0;
 		int totalChickens = 0;
 		int totalAnimal = 0;
 
 		for (Animal animal : animals) {
-//			if (animal.getType().equals("pigs") && animal.getWeight() < 100) {
-//
-//				// not Acceptable is not working
-//				throw new NotAcceptable("Not acceptable sell animal under weigth");
-//			}
-			if (animal.getType().equals("pigs") && animal.getWeight() >= 100) {
 
+			if (animal.getType().equals("pigs") && animal.getWeight() >= 100) {
+				float pigValue = 250;
+				totalPigs += pigValue;
 				totalPigs += animal.getPrice();
+
 			}
 
-			totalAnimal = totalPigs + animals.size() - 1;
+			totalAnimal = totalPigs + pigs.size();
 
 			// Getting the type of the aninal and checking if the weiht is enough for sell
 			if (animal.getType().equals("cows") && animal.getWeight() >= 300) {
 				// taking the price of the animal and adding it in the variable totalCows
+				float cowValue = 500;
+				totalCows += cowValue;
 				totalCows += animal.getPrice();
 			}
-			totalAnimal = totalCows + animals.size();
-
+			totalAnimal = totalCows + cows.size();
+			// comparing if the type of the animal is equal chicken and is yes the weight
+			// cannot be below 0.5
 			if (animal.getType().equals("chickens") && animal.getWeight() >= 0.5) {
-
+				float chickenValue = 5;
+				totalChickens += chickenValue;
 				totalChickens += animal.getPrice();
 			}
-			totalAnimal = totalChickens + animals.size();
+			totalAnimal = totalChickens + chickens.size();
 		}
 		totalAnimal = totalPigs + totalCows + totalChickens;
 
-		return "The total of the Farm is: €" + totalAnimal;
+		return new SuccessResponse("The total of the Farm is: €" + totalAnimal);
 
 	}
 
@@ -188,11 +191,13 @@ public class farmCa2019323Controller {
 	// value of the farm assuming the price of each animal is set by a parameter in
 	// the HTTP request
 
+	
 	@GetMapping("request-params")
 	public String farmValue(@RequestParam(required = true) Float pigPrice,
-			@RequestParam(required = true) float cowPrice, @RequestParam(required = true) int chickensPrice) {
-
-		return "The total of the Farm is: €" + "pigs" + pigPrice + "cows" + " " + cowPrice + "chickens" + chickensPrice;
+			@RequestParam(required = true) float cowPrice, @RequestParam(required = true) float chickensPrice) {
+		float totalAnimal=0.f;
+		totalAnimal = pigPrice + cowPrice + chickensPrice;
+		return " pigs  €" + pigPrice + "  cows  €"  + cowPrice + "  chickens  €" + chickensPrice  +" The Farm total is:   €"+totalAnimal;
 
 	}
 }
