@@ -12,23 +12,28 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class farmCa2019323Controller {
 
-	public ArrayList<Animal> animals;// creating an arrayList
+	/**
+	 * Creating an array list of animal that will have all animal stock
+	 *  Creating an array list of  each type of animal pig. cows and chickems
+	 */
+	public ArrayList<Animal> animals;
 	public ArrayList<Animal> cows = new ArrayList<>();
 	public ArrayList<Animal> pigs = new ArrayList<>();
 	public ArrayList<Animal> chickens = new ArrayList<>();
 
-	/**
-	 * FIRST ENDPOINT
-	 */
 	public farmCa2019323Controller() {// creating a constructor
 		animals = new ArrayList<Animal>();// creating an empty array inside the constructor
 	}
 
-	// first endpoint
+
+	/**
+	 * FIRST ENDPOINT
+	 */
 	// Post http://localhost:8080/add-animal
-	@PostMapping("add-animal")
+	@PostMapping("add-animal") 
+	// adding an animal via json that will return a success message
 	public SuccessResponse addAnimal(@RequestBody Animal animal) {
-		animals.add(animal);
+		animals.add(animal); 
 		return new SuccessResponse("Animal " + animal.getType() + " added");
 
 	}
@@ -40,20 +45,22 @@ public class farmCa2019323Controller {
 	@GetMapping("average-weight")
 	public SuccessResponse averageAnimalWeight() {
 		if (animals.size() == 0) {
-
+			// in the case thare no animal in the stock the server will return an status code 404. message No animals stored in the farm
 			throw new NotFoundException("No animals stored in the farm");
 		}
+		//declaring the variable type float
 		float pigWeight = 0.0f;
 		float cowWeight = 0.0f;
 		float chickenWeight = 0.0f;
 		float weight = 0.0f;
 	
-		// lopping
+		// lopping taking all animal my the stock
 		for (Animal animal : animals) {
 			// taking the animal by type
 			if (animal.getType().equals("pigs")) {
 				pigs.add(animal);
 				pigWeight += animal.getWeight();
+				// I am geting all pigs in the stock
 				pigWeight = pigWeight / pigs.size();
 			}
 
@@ -75,7 +82,7 @@ public class farmCa2019323Controller {
 			
 		}
 
-
+		// the server will return all animal with this names in the stock
 		return new SuccessResponse("pigs "+ pigWeight+ " cows "+ cowWeight+ " chicken "+ chickenWeight);
 	}
 
@@ -83,6 +90,7 @@ public class farmCa2019323Controller {
 	 * THIRD ENDPOINT
 	 */
 	@GetMapping("calculate-total")
+	// HashMap will take all animals and put them in a list
 	public HashMap<String, Integer> calculate() {
 
 		if (animals.size() == 0) {
@@ -100,8 +108,9 @@ public class farmCa2019323Controller {
 					throw new RuntimeException("No animals found in the Farm");
 				}
 			}
+			// will be calculate only the pigs that is bigger or equal 100 
 			if (animal.getType().equals("pigs") && animal.getWeight() >= 100) {
-
+				// if the situation is okay it will add the pig in my stock for sell
 				totalPigs++;
 				totalAnimal = totalPigs;
 				System.out.println("The total of pigs is : " + totalPigs);
@@ -127,7 +136,7 @@ public class farmCa2019323Controller {
 		myAnimal.put("cows", totalCows);
 		myAnimal.put("chickens", totalChickens);
 		System.out.println(myAnimal.keySet());
-		return (myAnimal);
+		return (myAnimal);// here I have the result of my list
 
 	}
 
@@ -180,14 +189,17 @@ public class farmCa2019323Controller {
 	}
 
 	/**
-	 * FIFTH ENDPOINT
-	 * 
+	 * FIFTH ENDPOINT  
+	 * This method will return all animal which the price were set by parameter in the browzer
+	 * the animal will be add in the postman via jason 
+	 * in the browser will return the total of the farm stock
 	 * @return
 	 */
 	// value of the farm assuming the price of each animal is set by a parameter in
 	// the HTTP request
 
 	@GetMapping("request-param-stock")
+	// all parameters that will be called in the browzer
 	public SuccessResponse farmValue(@RequestParam(required = true) Float pigPrice,
 			@RequestParam(required = true) float cowPrice, @RequestParam(required = true) float chickensPrice) {
 
@@ -195,6 +207,7 @@ public class farmCa2019323Controller {
 
 			throw new NotFoundException("No animals stored in the farm");
 		}
+		// this variable will contem the value of the variables passed by parameter above
 		int totalPigs = 0;
 		int totalCows = 0;
 		int totalChickens = 0;
@@ -215,7 +228,7 @@ public class farmCa2019323Controller {
 			if (animal.getType().equals("cows") && animal.getWeight() >= 300) {
 				totalCows+= cowPrice;
 				
-				System.out.println("The total of cows is : " + totalCows);
+				
 			}
 			if (animal.getType().equals("chickens") && animal.getWeight() >= 0.5) {
 				totalChickens+= chickensPrice;
