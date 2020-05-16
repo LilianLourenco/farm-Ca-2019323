@@ -14,7 +14,7 @@ public class farmCa2019323Controller {
 
 	public ArrayList<Animal> animals;// creating an arrayList
 	public ArrayList<Animal> cows = new ArrayList<>();
-	ArrayList<Animal> pigs = new ArrayList<>();
+	public ArrayList<Animal> pigs = new ArrayList<>();
 	public ArrayList<Animal> chickens = new ArrayList<>();
 
 	/**
@@ -38,7 +38,7 @@ public class farmCa2019323Controller {
 	 */
 	// Get http://localhost:8080/average-weight
 	@GetMapping("average-weight")
-	public HashMap<String, Float> averageAnimalWeight() {
+	public SuccessResponse averageAnimalWeight() {
 		if (animals.size() == 0) {
 
 			throw new NotFoundException("No animals stored in the farm");
@@ -47,40 +47,36 @@ public class farmCa2019323Controller {
 		float cowWeight = 0.0f;
 		float chickenWeight = 0.0f;
 		float weight = 0.0f;
-		// hasshMap will take all type of animals in a list
-		HashMap<String, Float> weightAnimal = new HashMap<String, Float>();
+	
 		// lopping
 		for (Animal animal : animals) {
 			// taking the animal by type
 			if (animal.getType().equals("pigs")) {
 				pigs.add(animal);
-
 				pigWeight += animal.getWeight();
+				pigWeight = pigWeight / pigs.size();
 			}
 
-			weight = pigWeight / pigs.size();
-			System.out.println("The average weight of pig  is " + pigWeight);
+			
 			if (animal.getType().equals("cows")) {
+				cows.add(animal);
 				cowWeight += animal.getWeight();
+				cowWeight = cowWeight / cows.size();
 			}
 
-			weight = cowWeight / cows.size();
+			
 			// line for check the result in eclipse
-			System.out.println("The average weight of cow is " + cowWeight);
 
 			if (animal.getType().equals("chickens")) {
+				chickens.add(animal);
 				chickenWeight += animal.getWeight();
+				chickenWeight = chickenWeight / chickens.size();	
 			}
-			weight = chickenWeight / chickens.size();
-			System.out.println("The average weight of chickens  is " + chickenWeight);
-
+			
 		}
-		weightAnimal.put("pigs", pigWeight);
-		weightAnimal.put("cows", cowWeight);
-		weightAnimal.put("chickens", chickenWeight);
-		System.out.println(weightAnimal.keySet());
 
-		return (weightAnimal);
+
+		return new SuccessResponse("pigs "+ pigWeight+ " cows "+ cowWeight+ " chicken "+ chickenWeight);
 	}
 
 	/**
@@ -138,7 +134,7 @@ public class farmCa2019323Controller {
 	/**
 	 * FOURTH ENDPOINT
 	 */
-	@GetMapping("calculate-Total-Farm")
+	@GetMapping("full-farm-Stock")
 	public SuccessResponse calculateFarm() {
 		if (animals.size() == 0) {
 
@@ -191,7 +187,7 @@ public class farmCa2019323Controller {
 	// value of the farm assuming the price of each animal is set by a parameter in
 	// the HTTP request
 
-	@GetMapping("request-params")
+	@GetMapping("request-param-stock")
 	public SuccessResponse farmValue(@RequestParam(required = true) Float pigPrice,
 			@RequestParam(required = true) float cowPrice, @RequestParam(required = true) float chickensPrice) {
 
@@ -213,19 +209,17 @@ public class farmCa2019323Controller {
 			if (animal.getType().equals("pigs") && animal.getWeight() >= 100) {
 
 				totalPigs+= pigPrice;
-				// totalAnimal = totalPigs;
-			//	System.out.println("The total of pigs is : " + totalPigs);
-
+				
 			}
 
 			if (animal.getType().equals("cows") && animal.getWeight() >= 300) {
 				totalCows+= cowPrice;
-				// totalAnimal = totalCows;
+				
 				System.out.println("The total of cows is : " + totalCows);
 			}
 			if (animal.getType().equals("chickens") && animal.getWeight() >= 0.5) {
 				totalChickens+= chickensPrice;
-				// totalAnimal = totalChickens;
+				
 			}
 		}
 
